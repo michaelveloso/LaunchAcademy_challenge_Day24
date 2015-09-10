@@ -1,0 +1,38 @@
+<h1><%= @meetup.name %></h1><br>
+<span><%= @meetup.description %><br></span>
+<span>@<%= @meetup.location %></span>
+
+<ul>
+  <% @meetup.users.each do |user| %>
+  <li><img src="<%= user.avatar_url %>" height="20" width ="20"> <%= user.username %></li>
+  <% end %>
+</ul>
+
+<h3>Comments</h3>
+<ul>
+  <% @comments.each do |comment| %>
+  <li><%= comment.title %>: <%= comment.body %> -<%= comment.user.username %>
+  </li>
+  <% end %>
+</ul>
+
+<% if signed_in? %>
+  <% if not @meetup.users.include?(@user) %>
+    <form action="/meetup/join?id=<%= @meetup.id %>" method="post">
+      <input type="submit" value="Join this meetup!">
+    </form>
+  <% else %>
+    <form action="/meetup/add_comment?id=<%= @meetup.id %>" method="post">
+      <span>Leave a comment:</span>
+      <input type="text" name="comment[title]" placeholder="Title">
+      <input type="text" name="comment[body]" placeholder="Comment" required>
+      <input type="submit" value="Submit a new comment!">
+    </form>
+    <br>
+    <form action="/meetup/leave?id=<%= @meetup.id %>" method="post">
+      <input type="submit" value="Leave this meetup!">
+    </form>
+  <% end %>
+<% else %>
+  <span> Sign in to join or leave this meetup, or post a comment! <span>
+<% end %>
